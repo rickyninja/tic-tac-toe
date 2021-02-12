@@ -5,11 +5,21 @@ This repo is a stubbed-out Tic-Tac-Toe game, where it is your mission,
 should you choose to accept it, to implement the gameplay (and tests!)
 
 Since this is a Scala game, we will toss mutability to the wind, use our
-wonderful collections library, and use recursion since this is a Scala game...
+wonderful collections library, and use recursion...
 
 The goal is to implement our `Main` method and all the plumbing, which will recursively play a `Game` -
 consisting of `Players`, `GameBoards` and `GameGrids` until the `Game` ends with a winner, or tie if no moves
 are remaining.
+
+## Getting Started
+
+To get started - please be sure to fork this repository and do your work in your own repo.  When you are done, send a public link to your repo so we can assess your efforts.
+
+You may use any editor/IDE that you prefer to accomplish the task.
+
+You probably must have SBT (https://www.scala-sbt.org/download.html) installed at the bare minimum as this project is built with SBT.
+
+A JDK is also required. (JDK 13 or 15)
 
 ## Overview of packages
 
@@ -73,4 +83,3 @@ but need to be implemented, and `GameGridSpec` needs tests defined and implement
 
 * Add and implement [LazyLogging](https://github.com/lightbend/scala-logging) as a dependency, to log what's going on in the background as state is being mutated.
 * Make some custom components that aren't so classic (e.g. a dimension=9 GameGrid)
-* ???
