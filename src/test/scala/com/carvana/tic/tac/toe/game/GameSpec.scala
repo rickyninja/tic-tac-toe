@@ -1,6 +1,6 @@
 package com.carvana.tic.tac.toe.game
 
-import com.carvana.tic.tac.toe.models.{Move, O, X}
+import com.carvana.tic.tac.toe.models.{Position, Move, O, X}
 import com.carvana.tic.tac.toe.{GamePlayLogic, GameSetUp, TicTacIO}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
@@ -9,15 +9,55 @@ import org.scalatest.matchers.should
 // Implement there to take a pre-determined collection of moves that results in...
 // 1. Player X wining
 object PlayerXWins extends TicTacIO {
-  override def getMoveForPlayer(player: Player): Move = ???
+  val moves: Array[Move] = Array(
+    Move(Position(0,0), X),
+    Move(Position(2,0), O),
+    Move(Position(0,1), X),
+    Move(Position(2,1), O),
+    Move(Position(0,2), X),
+  )
+  var index: Int = 0
+  override def getMoveForPlayer(player: Player): Move = {
+    val m = moves(index)
+    index += 1
+    m
+  }
 }
 // 2. Player O winning
 object PlayerOWins extends TicTacIO {
-  override def getMoveForPlayer(player: Player): Move = ???
+  val moves: Array[Move] = Array(
+    Move(Position(0,0), O),
+    Move(Position(2,0), X),
+    Move(Position(0,1), O),
+    Move(Position(2,1), X),
+    Move(Position(0,2), O),
+  )
+  var index: Int = 0
+  override def getMoveForPlayer(player: Player): Move = {
+    val m = moves(index)
+    index += 1
+    m
+  }
 }
 // 3. A tie
 object TieGame extends TicTacIO {
-  override def getMoveForPlayer(player: Player): Move = ???
+  val moves: Array[Move] = Array(
+    Move(Position(0,0), X),
+    Move(Position(0,1), O),
+    Move(Position(0,2), X),
+    Move(Position(1,1), O),
+    Move(Position(1,0), X),
+    Move(Position(1,2), O),
+    Move(Position(2,2), X),
+    Move(Position(2,0), O),
+    Move(Position(2,1), X),
+  )
+  var index: Int = 0
+  override def getMoveForPlayer(player: Player): Move = {
+    val m = moves(index)
+    index += 1
+    m
+  }
 }
 
 class GameSpec extends AnyFlatSpec with should.Matchers

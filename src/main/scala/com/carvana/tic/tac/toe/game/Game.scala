@@ -1,6 +1,6 @@
 package com.carvana.tic.tac.toe.game
 
-import com.carvana.tic.tac.toe.models.Move
+import com.carvana.tic.tac.toe.models.{Move, Marker, X, O}
 
 import scala.util.Try
 
@@ -48,11 +48,18 @@ trait Game {
 case class ClassicGame(gameBoard: GameBoard, playerQueue: LazyList[Player])
     extends Game {
 
-  override val currentPlayer: Player = ???
+  override val currentPlayer: Player = {
+    playerQueue.iterator.next()
+  }
 
   override def makeMoveForPlayer(
       player: Player,
       move: Move
-  ): Try[Either[Option[Player], Game]] = ???
+  ): Try[Either[Option[Player], Game]] = {
+    if (gameBoard.isGameOver)
+      Try(Left(Option(ClassicPlayer(player.displayName, gameBoard.winningMarker.getOrElse(X)))))
+    else
+      Try(Right(ClassicGame(gameBoard.makeMove(move), LazyList(player.next()))))
+  }
 
 }

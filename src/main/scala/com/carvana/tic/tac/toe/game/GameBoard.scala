@@ -1,6 +1,6 @@
 package com.carvana.tic.tac.toe.game
 
-import com.carvana.tic.tac.toe.models.{Marker, Move}
+import com.carvana.tic.tac.toe.models.{Cell, Position, Marker, Move}
 
 /**
   * A trait representing an instance of Tic Tac Toe GameBoard.
@@ -44,10 +44,36 @@ trait GameBoard {
  */
 case class ClassicGameBoard(grid: GameGrid) extends GameBoard {
 
-  override val isGameOver: Boolean = ???
-  override val winningMarker: Option[Marker] = ???
+  override val isGameOver: Boolean = false
+  override val winningMarker: Option[Marker] = None
 
-  override def isMoveValid(move: Move): Boolean = ???
-  override def makeMove(move: Move): GameBoard = ???
+  override def isMoveValid(move: Move): Boolean = {
+    if (move.position.row < 0 || move.position.row > 2)
+      false
+    else if (move.position.col < 0 || move.position.col > 2)
+      false
+    else if (grid.cellHasMarker(move.position))
+      false
+    else
+      true
+  }
 
+  override def makeMove(move: Move): GameBoard = {
+    // TODO throw if !isMoveValid
+    val nextGrid = grid.placeMove(move)
+    val isGameOver = 
+      if (nextGrid.unplacedPositions == 0)
+        true
+      else if (nextGrid.winningMarker != None)
+        true
+      else 
+        false
+    ClassicGameBoard(nextGrid, isGameOver, nextGrid.winningMarker)
+  }
+}
+
+object ClassicGameBoard {
+  def apply(grid: GameGrid, isGameOver: Boolean, winningMarker: Option[Marker]): ClassicGameBoard = {
+    ClassicGameBoard(grid, isGameOver, winningMarker)
+  }
 }
