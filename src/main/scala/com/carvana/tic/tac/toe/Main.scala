@@ -63,10 +63,10 @@ trait GameSetUp {
   // Set Up
   val dimension: Int = 3
   val emptyCells: Seq[Cell] = Seq()
-  val emptyGrid: GameGrid = ClassicGameGrid(dimension, emptyCells)
+  val emptyGrid: GameGrid = ClassicGameGrid(dimension = dimension, cells = emptyCells)
   val cleanBoard: GameBoard = ClassicGameBoard(emptyGrid)
-  val playerQueue: LazyList[Player] = LazyList.cons(ClassicPlayer("player X", X), LazyList.cons(ClassicPlayer("player O", O), LazyList.empty))
-  val newGame: Game = ClassicGame(cleanBoard, playerQueue)
+  val playerQueue: LazyList[Player] = LazyList.cons(ClassicPlayer("player O", O), LazyList.empty)
+  val newGame: Game = ClassicGame(cleanBoard, playerQueue, ClassicPlayer("player X", X))
 }
 
 trait GamePlayLogic {

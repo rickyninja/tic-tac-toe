@@ -45,12 +45,8 @@ trait Game {
  * @param gameBoard The current state/instance of the GameBoard
  * @param playerQueue A stream of Players, in turn order
  */
-case class ClassicGame(gameBoard: GameBoard, playerQueue: LazyList[Player])
+case class ClassicGame(gameBoard: GameBoard, playerQueue: LazyList[Player], currentPlayer: Player)
     extends Game {
-
-  override val currentPlayer: Player = {
-    playerQueue.iterator.next()
-  }
 
   override def makeMoveForPlayer(
       player: Player,
@@ -59,7 +55,6 @@ case class ClassicGame(gameBoard: GameBoard, playerQueue: LazyList[Player])
     if (gameBoard.isGameOver)
       Try(Left(Option(ClassicPlayer(player.displayName, gameBoard.winningMarker.getOrElse(X)))))
     else
-      Try(Right(ClassicGame(gameBoard.makeMove(move), LazyList(player.next()))))
+      Try(Right(ClassicGame(gameBoard = gameBoard.makeMove(move), playerQueue = LazyList(player.next()), currentPlayer = currentPlayer)))
   }
-
 }

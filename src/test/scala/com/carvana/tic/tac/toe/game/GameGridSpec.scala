@@ -24,6 +24,16 @@ class GameGridSpec extends AnyFlatSpec with should.Matchers with GameSetUp {
   }
 
   "placeMove" should "decrement unplacedPositions" in {
+    val cells = Seq(
+        Cell(Position(0,0), None), Cell(Position(0,1), None), Cell(Position(0,2), None),
+        Cell(Position(1,0), None), Cell(Position(1,1), None), Cell(Position(1,2), None),
+        Cell(Position(2,0), None), Cell(Position(2,1), None), Cell(Position(2,2), None),
+    )
+    val gg = ClassicGameGrid(cells = cells)
+    assert(gg.unplacedPositions == 9)
+    val move = Move(Position(0,0), X)
+    val got = gg.placeMove(move)
+    assert(got.unplacedPositions == 8)
   }
 
   "top row winner" should "return winner from checkWinner" in {
@@ -33,5 +43,4 @@ class GameGridSpec extends AnyFlatSpec with should.Matchers with GameSetUp {
     val gg = new ClassicGameGrid(cells = cells)
     assert(gg.checkWinner() == Option(X))
   }
-
 }

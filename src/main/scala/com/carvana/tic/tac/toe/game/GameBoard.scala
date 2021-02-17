@@ -42,10 +42,7 @@ trait GameBoard {
  * A classic implementation of a Tic Tac Toe GameBoard
  * @param grid
  */
-case class ClassicGameBoard(grid: GameGrid) extends GameBoard {
-
-  override val isGameOver: Boolean = false
-  override val winningMarker: Option[Marker] = None
+case class ClassicGameBoard(grid: GameGrid, isGameOver: Boolean = false, winningMarker: Option[Marker] = None) extends GameBoard {
 
   override def isMoveValid(move: Move): Boolean = {
     if (move.position.row < 0 || move.position.row > 2)
@@ -68,12 +65,6 @@ case class ClassicGameBoard(grid: GameGrid) extends GameBoard {
         true
       else 
         false
-    ClassicGameBoard(nextGrid, isGameOver, nextGrid.winningMarker)
-  }
-}
-
-object ClassicGameBoard {
-  def apply(grid: GameGrid, isGameOver: Boolean, winningMarker: Option[Marker]): ClassicGameBoard = {
-    ClassicGameBoard(grid, isGameOver, winningMarker)
+    ClassicGameBoard(grid = nextGrid, isGameOver = isGameOver, winningMarker = nextGrid.winningMarker)
   }
 }

@@ -31,6 +31,11 @@ trait GameGrid {
   def cellHasMarker(position: Position): Boolean
 
   /**
+   * See which Marker is in a cell
+   */
+  def markerInCell(position: Position): Option[Marker]
+
+  /**
    * A holder of the clear winner, if any
    */
   val winningMarker: Option[Marker]
@@ -53,10 +58,7 @@ trait GameGrid {
  * @param dimension The dimension of our GameGrid, defaulted to 3
  * @param cells The Collection of Cells, representing all possible Positions on the GameGrid.
  */
-case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell]) extends GameGrid {
-
-  override val unplacedPositions: Int = dimension * dimension
-  override val winningMarker: Option[Marker] = None
+case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell] = Seq(), unplacedPositions: Int = 9, winningMarker: Option[Marker] = None) extends GameGrid {
 
   override def cellHasMarker(position: Position): Boolean = {
     val found = cells.find(c => {
@@ -64,6 +66,14 @@ case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell]) extends GameGri
         c.position.col == position.col
     })
     found.getOrElse(Cell(Position(row = 0, col = 0),None)).placedMarker != None
+  }
+
+  override def markerInCell(position: Position): Option[Marker] = {
+    val found = cells.find(c => {
+        c.position.row == position.row &&
+        c.position.col == position.col
+    })
+    found.getOrElse(Cell(Position(row = 0, col = 0),None)).placedMarker
   }
 
   override def checkWinner(): Option[Marker] = {
@@ -101,14 +111,11 @@ case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell]) extends GameGri
         c.position.row == move.position.row &&
         c.position.col == move.position.col)
     val idx = cells.indexOf(found)
-    val nextCells = cells.updated(idx, Cell(move.position, Option(move.marker)))
+    val nextCells = idx match {
+      case idx if (idx >= 0) => cells.updated(idx, Cell(move.position, Option(move.marker)))
+      case _ => cells :+ Cell(move.position, Option(move.marker))
+    }
     // TODO check for win condition?
     ClassicGameGrid(dimension, nextCells, unplacedPositions -1, checkWinner())
-  }
-}
-
-object ClassicGameGrid {
-  def apply(dimension: Int, cells: Seq[Cell], unplacedPositions: Int, winningMarker: Option[Marker]): ClassicGameGrid = {
-    ClassicGameGrid(dimension, cells, unplacedPositions, winningMarker)
   }
 }
