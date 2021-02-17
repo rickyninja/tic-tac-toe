@@ -7,10 +7,6 @@ import org.scalatest.matchers.should
 
 class GameGridSpec extends AnyFlatSpec with should.Matchers with GameSetUp {
 
-  "A GameGrid" should "have a bunch of tests implemented" in {
-    assert(false)
-  }
-
   "placeMove" should "update cells with the Move" in {
     val cells = Seq(
         Cell(Position(0,0), None), Cell(Position(0,1), None), Cell(Position(0,2), None),
