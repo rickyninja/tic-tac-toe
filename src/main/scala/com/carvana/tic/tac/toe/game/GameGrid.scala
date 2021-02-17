@@ -110,12 +110,14 @@ case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell] = Seq(), unplace
     val found = cells.find(c =>
         c.position.row == move.position.row &&
         c.position.col == move.position.col)
-    val idx = cells.indexOf(found)
+    val idx = found match {
+      case None => -1
+      case _ => cells.indexOf(found.get)
+    }
     val nextCells = idx match {
       case idx if (idx >= 0) => cells.updated(idx, Cell(move.position, Option(move.marker)))
       case _ => cells :+ Cell(move.position, Option(move.marker))
     }
-    // TODO check for win condition?
     ClassicGameGrid(dimension, nextCells, unplacedPositions -1, checkWinner())
   }
 }
