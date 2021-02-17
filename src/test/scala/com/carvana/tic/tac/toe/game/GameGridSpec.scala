@@ -36,7 +36,7 @@ class GameGridSpec extends AnyFlatSpec with should.Matchers with GameSetUp {
     val cells = Seq(
         Cell(Position(0,0), Option(X)), Cell(Position(0,1), Option(X)), Cell(Position(0,2), Option(X)),
     )
-    val gg = new ClassicGameGrid(cells = cells)
+    val gg = ClassicGameGrid(cells = cells)
     assert(gg.checkWinner() == Option(X))
   }
 }

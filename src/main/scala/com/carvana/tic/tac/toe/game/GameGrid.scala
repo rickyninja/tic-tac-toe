@@ -77,8 +77,8 @@ case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell] = Seq(), unplace
   }
 
   override def checkWinner(): Option[Marker] = {
-    val xCells = cells.filter(c => c.placedMarker == X)
-    val oCells = cells.filter(c => c.placedMarker == O)
+    val xCells = cells.filter(c => c.placedMarker == Some(X))
+    val oCells = cells.filter(c => c.placedMarker == Some(O))
     val wins = Seq(
       // rows
       Seq(Position(row = 0, col = 0), Position(row =0, col = 1), Position(row = 0, col = 2)),
