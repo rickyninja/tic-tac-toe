@@ -66,7 +66,7 @@ trait GameSetUp {
   val emptyGrid: GameGrid = ClassicGameGrid(dimension = dimension, cells = emptyCells)
   val cleanBoard: GameBoard = ClassicGameBoard(emptyGrid)
   val playerQueue: LazyList[Player] = LazyList.cons(ClassicPlayer("player X", X), LazyList.empty)
-  val newGame: Game = ClassicGame(cleanBoard, playerQueue, ClassicPlayer("player X", X))
+  val newGame: Game = ClassicGame(cleanBoard, ClassicPlayer("player X", X))
 }
 
 trait GamePlayLogic {
