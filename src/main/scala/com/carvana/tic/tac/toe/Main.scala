@@ -3,6 +3,7 @@ package com.carvana.tic.tac.toe
 import com.carvana.tic.tac.toe.game.{Game, GameBoard, GameGrid, ClassicPlayer, Player, ClassicGameBoard, ClassicGameGrid, ClassicGame}
 import com.carvana.tic.tac.toe.models.{Cell, Move, X, O, Position}
 
+import scala.util.{Try,Success,Failure}
 import scala.annotation.tailrec
 
 /* NOTE:
@@ -50,7 +51,7 @@ trait TicTacIO {
    * @param game
    */
   def displayGameState(game: Game): Unit = {
-    // print the grid
+    // TODO print the grid
     // System.err.println()
   }
 
@@ -80,17 +81,21 @@ trait GamePlayLogic {
    */
   @tailrec
   final def playGame(game: Game)(ioOperator: TicTacIO): Option[Player] = {
-    var winner: Option[Player] = None
-    def inner(game: Game)(ioOperator: TicTacIO): Option[Player] = {
-      while (!game.gameBoard.isGameOver) {
-        winner = inner(game)(ioOperator)
+    game.gameBoard.isGameOver match {
+      case true => Some(game.currentPlayer)
+      case false => {
+        val move = ioOperator.getMoveForPlayer(game.currentPlayer)
+        val result = game.makeMoveForPlayer(game.currentPlayer, move)
+        result match {
+          case Failure(f) => None
+          case Success(s) => s match {
+            case Left(p) => p
+            case Right(g) => playGame(ClassicGame(g.gameBoard, g.playerQueue.drop(1).head))(ioOperator)
+          }
+        }
       }
-      winner
     }
-    playGame(game)(ioOperator)
-    //ClassicPlayer("player fake", X) // TODO return winner
   }
-
 }
 
 /**

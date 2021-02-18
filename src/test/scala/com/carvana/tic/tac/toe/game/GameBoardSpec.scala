@@ -39,6 +39,21 @@ class GameBoardSpec extends AnyFlatSpec with should.Matchers with GameSetUp {
     }
   }
 
+  it should "set isGameOver true once the game has been won" in {
+    var gb: GameBoard = ClassicGameBoard(ClassicGameGrid(cells = Seq()))
+    val positions = Table(
+      ("row", "col", "marker"),  // First tuple defines column names
+      (0, 0, X),
+      (0, 1, X),
+      (0, 2, X),
+    )
+    forAll (positions) { (row: Int, col: Int, marker: Marker) =>
+      val pos = Position(row, col)
+      gb = gb.makeMove(Move(pos, marker))
+    }
+    assert(gb.isGameOver == true)
+  }
+
   it should "be able to make any move on the GameGrid for O" in {
     val gb = ClassicGameBoard(ClassicGameGrid(cells = Seq()))
     val positions = Table(

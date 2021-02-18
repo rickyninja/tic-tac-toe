@@ -51,6 +51,11 @@ trait GameGrid {
    * @return
    */
   def placeMove(move: Move): GameGrid
+
+  /**
+   * draw returns a string representing the grid state.
+   */
+  def draw(): String
 }
 
 /**
@@ -58,7 +63,9 @@ trait GameGrid {
  * @param dimension The dimension of our GameGrid, defaulted to 3
  * @param cells The Collection of Cells, representing all possible Positions on the GameGrid.
  */
-case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell] = Seq(), unplacedPositions: Int = 9, winningMarker: Option[Marker] = None) extends GameGrid {
+case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell] = Seq(),
+    unplacedPositions: Int = 9, winningMarker: Option[Marker] = None
+  ) extends GameGrid {
 
   override def cellHasMarker(position: Position): Boolean = {
     val found = cells.find(c => {
@@ -73,37 +80,73 @@ case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell] = Seq(), unplace
         c.position.row == position.row &&
         c.position.col == position.col
     })
-    found.getOrElse(Cell(Position(row = 0, col = 0),None)).placedMarker
+    found match {
+      case None => None
+      case Some(x) => x.placedMarker
+    }
   }
 
   override def checkWinner(): Option[Marker] = {
     val xCells = cells.filter(c => c.placedMarker == Some(X))
     val oCells = cells.filter(c => c.placedMarker == Some(O))
-    val wins = Seq(
+    val winSeqs = Seq(
       // rows
-      Seq(Position(row = 0, col = 0), Position(row =0, col = 1), Position(row = 0, col = 2)),
-      Seq(Position(row = 1, col = 0), Position(row =1, col = 1), Position(row = 1, col = 2)),
-      Seq(Position(row = 2, col = 0), Position(row =2, col = 1), Position(row = 2, col = 2)),
+      Seq(Position(0, 0), Position(0, 1), Position(0, 2)),
+      Seq(Position(1, 0), Position(1, 1), Position(1, 2)),
+      Seq(Position(2, 0), Position(2, 1), Position(2, 2)),
       // cols
-      Seq(Position(row = 0, col = 0), Position(row =1, col = 0), Position(row = 2, col = 0)),
-      Seq(Position(row = 0, col = 1), Position(row =1, col = 1), Position(row = 2, col = 1)),
-      Seq(Position(row = 0, col = 2), Position(row =1, col = 2), Position(row = 2, col = 2)),
+      Seq(Position(0, 0), Position(1, 0), Position(2, 0)),
+      Seq(Position(0, 1), Position(1, 1), Position(2, 1)),
+      Seq(Position(0, 2), Position(1, 2), Position(2, 2)),
       // diags
-      Seq(Position(row = 0, col = 0), Position(row =1, col = 1), Position(row = 2, col = 2)),
-      Seq(Position(row = 2, col = 0), Position(row =1, col = 1), Position(row = 0, col = 2)),
+      Seq(Position(0, 0), Position(1, 1), Position(2, 2)),
+      Seq(Position(2, 0), Position(1, 1), Position(0, 2)),
     )
-    for ((marker, cells) <- List((X, xCells), (O, oCells)))
-      for (w <- wins) {
+    for ((marker, cls) <- List((X, xCells), (O, oCells))) {
+      for (winSeq <- winSeqs) {
         var c: Int = 0
-        for (p <- w)
-          if (cells.contains(Cell(Position(row = p.row, col = p.col), Option(marker)))) {
-            c += 1
+        for (p <- winSeq) {
+          val markFound = this.markerInCell(Position(p.row, p.col))
+          markFound match {
+            case None =>
+            case Some(x) => {
+              c += 1
+            }
           }
-        if (c == dimension) {
-          return Option(marker)
+          if (c == dimension) {
+            return Option(marker)
+          }
         }
       }
+    }
     None
+  }
+
+  override def draw(): String = {
+    val positions = List(
+      Position(0,0), Position(0,1), Position(0,2),
+      Position(1,0), Position(1,1), Position(1,2),
+      Position(2,0), Position(2,1), Position(2,2),
+    )
+    /*
+     * XO-
+     * -XO
+     * O-X
+     */
+    var str: String = ""
+    var c: Int = 1
+    for (p <- positions) {
+      val m = this.markerInCell(p)
+      m match {
+        case None => str += "-"
+        case Some(X) => str += "X"
+        case Some(O) => str += "O"
+      }
+      if (c % dimension == 0)
+        str += "\n"
+      c += 1
+    }
+    str
   }
 
   override def placeMove(move: Move): GameGrid = {
@@ -118,6 +161,10 @@ case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell] = Seq(), unplace
       case idx if (idx >= 0) => cells.updated(idx, Cell(move.position, Option(move.marker)))
       case _ => cells :+ Cell(move.position, Option(move.marker))
     }
-    ClassicGameGrid(dimension, nextCells, unplacedPositions -1, checkWinner())
+    // construct 2 game grids because we need to update the cells before checking for winner.
+    val penUlt = ClassicGameGrid(dimension, nextCells, unplacedPositions -1, None)
+    val cw = penUlt.checkWinner()
+    val ngg = ClassicGameGrid(dimension, nextCells, unplacedPositions -1, cw)
+    ngg
   }
 }

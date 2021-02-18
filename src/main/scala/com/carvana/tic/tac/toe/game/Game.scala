@@ -61,9 +61,10 @@ case class ClassicGame(gameBoard: GameBoard, currentPlayer: Player)
       player: Player,
       move: Move
   ): Try[Either[Option[Player], Game]] = {
-    if (gameBoard.isGameOver)
-      Try(Left(Option(ClassicPlayer(player.displayName, gameBoard.winningMarker.getOrElse(X)))))
+    val nextBoard = gameBoard.makeMove(move)
+    if (nextBoard.isGameOver)
+      Try(Left(Option(player)))
     else
-      Try(Right(ClassicGame(gameBoard = gameBoard.makeMove(move), currentPlayer = currentPlayer)))
+      Try(Right(ClassicGame(gameBoard = nextBoard, currentPlayer = player)))
   }
 }
