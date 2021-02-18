@@ -104,16 +104,16 @@ case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell] = Seq(),
     )
     for ((marker, cls) <- List((X, xCells), (O, oCells))) {
       for (winSeq <- winSeqs) {
-        var c: Int = 0
+        var c = scala.collection.mutable.Map("X" -> 0, "O" -> 0)
         for (p <- winSeq) {
           val markFound = this.markerInCell(Position(p.row, p.col))
           markFound match {
             case None =>
             case Some(x) => {
-              c += 1
+              c(x.toString()) = c(x.toString())+1
             }
           }
-          if (c == dimension) {
+          if (c(marker.toString()) == dimension) {
             return Option(marker)
           }
         }

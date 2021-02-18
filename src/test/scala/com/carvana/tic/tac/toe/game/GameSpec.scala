@@ -27,6 +27,7 @@ object PlayerXWins extends TicTacIO {
 // 2. Player O winning
 object PlayerOWins extends TicTacIO {
   val moves: Array[Move] = Array(
+    Move(Position(1,1), X),
     Move(Position(0,0), O),
     Move(Position(2,0), X),
     Move(Position(0,1), O),
