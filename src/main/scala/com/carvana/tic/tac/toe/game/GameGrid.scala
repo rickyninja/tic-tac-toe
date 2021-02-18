@@ -146,7 +146,7 @@ case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell] = Seq(),
         str += "\n"
       c += 1
     }
-    str
+    str.trim()
   }
 
   override def placeMove(move: Move): GameGrid = {

@@ -60,7 +60,6 @@ class GameGridSpec extends AnyFlatSpec with should.Matchers with GameSetUp {
     assert(gg.checkWinner() == Option(X))
   }
 
-  /* The string comparison in this test is whacky!
   "draw" should "draw state of the grid" in {
     val cells = Seq(
         Cell(Position(0,0), Some(X)), Cell(Position(0,1), None), Cell(Position(0,2), Some(O)),
@@ -70,8 +69,6 @@ class GameGridSpec extends AnyFlatSpec with should.Matchers with GameSetUp {
     var gg: GameGrid = ClassicGameGrid(cells = cells)
     assert(gg.cells.length == 9)
     val want = "X-O\nOX-\n-XO"
-    println(gg.draw())
     assert(gg.draw() == want)
   }
-   */
 }
