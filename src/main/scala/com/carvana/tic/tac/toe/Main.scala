@@ -51,8 +51,7 @@ trait TicTacIO {
    * @param game
    */
   def displayGameState(game: Game): Unit = {
-    // TODO print the grid
-    // System.err.println()
+    System.err.println(game.gameBoard.grid.draw())
   }
 
 }
