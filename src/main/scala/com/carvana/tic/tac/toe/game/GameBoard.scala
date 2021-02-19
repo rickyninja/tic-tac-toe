@@ -1,5 +1,6 @@
 package com.carvana.tic.tac.toe.game
 
+import com.carvana.tic.tac.toe.exceptions.InvalidMoveException
 import com.carvana.tic.tac.toe.models.{Cell, Position, Marker, Move}
 
 /**
@@ -55,8 +56,12 @@ case class ClassicGameBoard(grid: GameGrid, isGameOver: Boolean = false, winning
       true
   }
 
+  // Not sure how to annotate with the specific exception.
+  //@throws(classOf[InvalidMoveException])
+  @throws(classOf[Exception])
   override def makeMove(move: Move): GameBoard = {
-    // TODO throw if !isMoveValid
+    if (!isMoveValid(move))
+      throw InvalidMoveException
     val nextGrid = grid.placeMove(move)
     val isGameOver = 
       if (nextGrid.unplacedPositions == 0)

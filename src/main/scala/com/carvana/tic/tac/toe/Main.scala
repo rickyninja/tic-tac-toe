@@ -1,8 +1,8 @@
 package com.carvana.tic.tac.toe
 
+import com.carvana.tic.tac.toe.exceptions.{TicTacUhOh, InvalidMoveException}
 import com.carvana.tic.tac.toe.game.{Game, GameBoard, GameGrid, ClassicPlayer, Player, ClassicGameBoard, ClassicGameGrid, ClassicGame}
 import com.carvana.tic.tac.toe.models.{Cell, Move, X, O, Position}
-
 import scala.util.{Try,Success,Failure}
 import scala.annotation.tailrec
 
@@ -83,7 +83,18 @@ trait GamePlayLogic {
     game.gameBoard.isGameOver match {
       case true => Some(game.currentPlayer)
       case false => {
-        val move = ioOperator.getMoveForPlayer(game.currentPlayer)
+        var move: Move = Move(Position(0,0), X)
+        var badMove: Boolean = true
+        while (badMove) {
+          try {
+            move = ioOperator.getMoveForPlayer(game.currentPlayer)
+            badMove = false
+          } catch {
+            case t: TicTacUhOh => println("this doesn't seem to be catchable")
+            case e: Exception => println("this isn't caught either")
+            case _: Throwable => println("getMoveForPlayer failed")
+          }
+        }
         val result = game.makeMoveForPlayer(game.currentPlayer, move)
         result match {
           case Failure(f) => None
