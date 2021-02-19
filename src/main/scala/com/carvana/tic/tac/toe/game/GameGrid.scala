@@ -1,12 +1,13 @@
 package com.carvana.tic.tac.toe.game
 
+import com.typesafe.scalalogging.LazyLogging
 import com.carvana.tic.tac.toe.models.{Cell, Position, Marker, Move, X, O}
 
 /**
  * A trait representing the state of a GameGrid. The GameGrid handles much of the logic
  * for Cells, and their contents.
  */
-trait GameGrid {
+trait GameGrid extends LazyLogging {
 
   /**
    * The dimension of our grid, which is classically 3
@@ -150,6 +151,7 @@ case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell] = Seq(),
   }
 
   override def placeMove(move: Move): GameGrid = {
+    logger.debug("placing move on game grid")
     val found = cells.find(c =>
         c.position.row == move.position.row &&
         c.position.col == move.position.col)

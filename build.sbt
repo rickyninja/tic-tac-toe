@@ -7,5 +7,7 @@ scalaVersion := "2.13.4"
 cancelable in Global := true
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.2.2" % "test"
+  "org.scalatest" %% "scalatest" % "3.2.2" % "test",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
+  "ch.qos.logback" % "logback-classic" % "1.1.3" % Runtime,
 )

@@ -1,5 +1,6 @@
 package com.carvana.tic.tac.toe
 
+import com.typesafe.scalalogging.LazyLogging
 import com.carvana.tic.tac.toe.exceptions.{TicTacUhOh, InvalidMoveException}
 import com.carvana.tic.tac.toe.game.{Game, GameBoard, GameGrid, ClassicPlayer, Player, ClassicGameBoard, ClassicGameGrid, ClassicGame}
 import com.carvana.tic.tac.toe.models.{Cell, Move, X, O, Position}
@@ -69,7 +70,7 @@ trait GameSetUp {
   val newGame: Game = ClassicGame(cleanBoard, ClassicPlayer("player X", X))
 }
 
-trait GamePlayLogic {
+trait GamePlayLogic extends LazyLogging {
 
   /**
    * A tail-recursive method that plays a Game to completion, with input given
@@ -87,12 +88,13 @@ trait GamePlayLogic {
         var badMove: Boolean = true
         while (badMove) {
           try {
+            logger.debug("get next move for current player")
             move = ioOperator.getMoveForPlayer(game.currentPlayer)
             badMove = false
           } catch {
-            case t: TicTacUhOh => println("this doesn't seem to be catchable")
-            case e: Exception => println("this isn't caught either")
-            case _: Throwable => println("getMoveForPlayer failed")
+            case t: TicTacUhOh => logger.error("this doesn't seem to be catchable")
+            case e: Exception => logger.error("this isn't caught either")
+            case _: Throwable => logger.error("getMoveForPlayer failed")
           }
         }
         val result = game.makeMoveForPlayer(game.currentPlayer, move)

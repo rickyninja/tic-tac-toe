@@ -1,5 +1,6 @@
 package com.carvana.tic.tac.toe.game
 
+import com.typesafe.scalalogging.LazyLogging
 import com.carvana.tic.tac.toe.exceptions.InvalidMoveException
 import com.carvana.tic.tac.toe.models.{Cell, Position, Marker, Move}
 
@@ -7,7 +8,7 @@ import com.carvana.tic.tac.toe.models.{Cell, Position, Marker, Move}
   * A trait representing an instance of Tic Tac Toe GameBoard.
   * A GameBoard generally interfaces interactions between a Game, and the underlying GameGrid.
   */
-trait GameBoard {
+trait GameBoard extends LazyLogging{
 
   /**
    * The underlying GameGrid, which houses the Cell's, and any Marker placement
@@ -60,8 +61,10 @@ case class ClassicGameBoard(grid: GameGrid, isGameOver: Boolean = false, winning
   //@throws(classOf[InvalidMoveException])
   @throws(classOf[Exception])
   override def makeMove(move: Move): GameBoard = {
-    if (!isMoveValid(move))
+    if (!isMoveValid(move)) {
+      logger.debug("invalid move")
       throw InvalidMoveException
+    }
     val nextGrid = grid.placeMove(move)
     val isGameOver = 
       if (nextGrid.unplacedPositions == 0)

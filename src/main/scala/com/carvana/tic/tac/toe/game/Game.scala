@@ -1,5 +1,6 @@
 package com.carvana.tic.tac.toe.game
 
+import com.typesafe.scalalogging.LazyLogging
 import com.carvana.tic.tac.toe.models.{Move, Marker, X, O}
 import com.carvana.tic.tac.toe.game.Player
 
@@ -9,7 +10,7 @@ import scala.util.Try
   * An trait representing an instance of a Tic Tac Toe Game.
  *  Game generally handles the interaction between Players and a GameBoard
   */
-trait Game {
+trait Game extends LazyLogging {
 
   /**
    * The current state/instance of the GameBoard in play
@@ -61,6 +62,7 @@ case class ClassicGame(gameBoard: GameBoard, currentPlayer: Player)
       player: Player,
       move: Move
   ): Try[Either[Option[Player], Game]] = {
+    logger.debug("player is making move")
     val nextBoard = gameBoard.makeMove(move)
     if (nextBoard.isGameOver) {
       Try(Left(nextBoard.winningMarker match {
