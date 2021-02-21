@@ -66,6 +66,7 @@ object TieGame extends TicTacIO {
 
 class GameSpec extends AnyFlatSpec with should.Matchers
   with GameSetUp with GamePlayLogic  {
+  val dimension: Int = 3
 
   "A Game" should "make sure the currentPlayer is first in queue" in {
     assert(newGame.currentPlayer == newGame.playerQueue.head)

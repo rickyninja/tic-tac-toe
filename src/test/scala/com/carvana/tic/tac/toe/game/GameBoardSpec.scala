@@ -7,6 +7,7 @@ import org.scalatest.matchers.should
 import org.scalatest.prop.TableDrivenPropertyChecks._
 
 class GameBoardSpec extends AnyFlatSpec with should.Matchers with GameSetUp {
+  val dimension: Int = 3
 
   "A (clean) GameBoard" should "not be over before the game starts" in {
     val gb = ClassicGameBoard(ClassicGameGrid(cells = Seq()))

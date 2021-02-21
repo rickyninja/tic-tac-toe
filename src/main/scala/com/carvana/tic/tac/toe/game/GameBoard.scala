@@ -47,9 +47,9 @@ trait GameBoard extends LazyLogging{
 case class ClassicGameBoard(grid: GameGrid, isGameOver: Boolean = false, winningMarker: Option[Marker] = None) extends GameBoard {
 
   override def isMoveValid(move: Move): Boolean = {
-    if (move.position.row < 0 || move.position.row > 2)
+    if (move.position.row < 0 || move.position.row > grid.dimension-1)
       false
-    else if (move.position.col < 0 || move.position.col > 2)
+    else if (move.position.col < 0 || move.position.col > grid.dimension-1)
       false
     else if (grid.cellHasMarker(move.position))
       false

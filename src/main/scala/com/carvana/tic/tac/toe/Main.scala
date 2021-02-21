@@ -1,5 +1,6 @@
 package com.carvana.tic.tac.toe
 
+import org.rogach.scallop._
 import com.typesafe.scalalogging.LazyLogging
 import com.carvana.tic.tac.toe.exceptions.{TicTacUhOh, InvalidMoveException}
 import com.carvana.tic.tac.toe.game.{Game, GameBoard, GameGrid, ClassicPlayer, Player, ClassicGameBoard, ClassicGameGrid, ClassicGame}
@@ -62,12 +63,12 @@ trait TicTacIO {
  */
 trait GameSetUp {
   // Set Up
-  val dimension: Int = 3
+  val dimension: Int
   val emptyCells: Seq[Cell] = Seq()
-  val emptyGrid: GameGrid = ClassicGameGrid(dimension = dimension, cells = emptyCells)
-  val cleanBoard: GameBoard = ClassicGameBoard(emptyGrid)
+  lazy val emptyGrid: GameGrid = ClassicGameGrid(dimension = dimension, cells = emptyCells, unplacedPositions = dimension*dimension)
+  lazy val cleanBoard: GameBoard = ClassicGameBoard(emptyGrid)
   val playerQueue: LazyList[Player] = LazyList.cons(ClassicPlayer("player X", X), LazyList.empty)
-  val newGame: Game = ClassicGame(cleanBoard, ClassicPlayer("player X", X))
+  lazy val newGame: Game = ClassicGame(cleanBoard, ClassicPlayer("player X", X))
 }
 
 trait GamePlayLogic extends LazyLogging {
@@ -102,7 +103,10 @@ trait GamePlayLogic extends LazyLogging {
           case Failure(f) => None
           case Success(s) => s match {
             case Left(p) => p
-            case Right(g) => playGame(ClassicGame(g.gameBoard, g.playerQueue.drop(1).head))(ioOperator)
+            case Right(g) => {
+              println(g.gameBoard.grid.draw())
+              playGame(ClassicGame(g.gameBoard, g.playerQueue.drop(1).head))(ioOperator)
+            }
           }
         }
       }
@@ -110,10 +114,19 @@ trait GamePlayLogic extends LazyLogging {
   }
 }
 
+class Conf(arguments: Seq[String]) extends ScallopConf(arguments) {
+  val dimension = opt[Int]("dimension", default = Some(3))
+  verify()
+}
+
 /**
  * Our Main entry point - nothing new here _needs_ to be implemented, beyond the Traits above!
  */
 object Main extends App with GameSetUp with GamePlayLogic with TicTacIO {
+  // Weird quoting semantics to get this flag value through on linux shell.
+  // jeremys@skynet> sbt "run --dimension 9"
+  val conf = new Conf(args)
+  val dimension: Int = conf.dimension()
 
   // Play the game
   playGame(newGame)(ioOperator = this) match {

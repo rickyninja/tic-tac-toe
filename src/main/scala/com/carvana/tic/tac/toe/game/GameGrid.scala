@@ -57,6 +57,54 @@ trait GameGrid extends LazyLogging {
    * draw returns a string representing the grid state.
    */
   def draw(): String
+
+  // Seq(Position(0,0), Position(1,1), Position(2,2), Position(3,3), Position(4,4), Position(5,5), Position(6,6), Position(7,7), Position(8,8))
+  def makeBackSlash(): Seq[Position] = {
+    var bslash: Seq[Position] = Seq()
+    for (i <- 0 until this.dimension) {
+      bslash = bslash :+ Position(i,i)
+    }
+    bslash
+  }
+
+  // Seq(Position(0,8), Position(1,7), Position(2,6), Position(3,5), Position(4,4), Position(5,3), Position(6,2), Position(7,1), Position(8,0))
+  def makeForwardSlash(): Seq[Position] = {
+    var fslash: Seq[Position] = Seq()
+    var row: Int = 0
+    var col: Int = this.dimension -1
+    while (col >= 0) {
+      fslash = fslash :+ Position(row,col)
+      col -= 1
+      row += 1
+    }
+    fslash
+  }
+
+  def allPositions(): List[Position] = {
+    var pos: List[Position] = List()
+    for (row <- 0 until this.dimension) {
+      for (col <- 0 until this.dimension) {
+        pos = pos :+ Position(row,col)
+      }
+    }
+    pos
+  }
+
+  def makeWinSequences(): Seq[Seq[Position]] = {
+    var winSeqs: Seq[Seq[Position]] = Seq()
+    for (row <- 0 until this.dimension) {
+      var rowSeq: Seq[Position] = Seq()
+      var colSeq: Seq[Position] = Seq()
+      for (col <- 0 until this.dimension) {
+        rowSeq = rowSeq :+ Position(row,col)
+        colSeq = colSeq :+ Position(col,row)
+      }
+      winSeqs = winSeqs :+ rowSeq :+ colSeq
+    }
+    winSeqs = winSeqs :+ makeBackSlash() :+ makeForwardSlash()
+    winSeqs
+  }
+
 }
 
 /**
@@ -90,19 +138,7 @@ case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell] = Seq(),
   override def checkWinner(): Option[Marker] = {
     val xCells = cells.filter(c => c.placedMarker == Some(X))
     val oCells = cells.filter(c => c.placedMarker == Some(O))
-    val winSeqs = Seq(
-      // rows
-      Seq(Position(0, 0), Position(0, 1), Position(0, 2)),
-      Seq(Position(1, 0), Position(1, 1), Position(1, 2)),
-      Seq(Position(2, 0), Position(2, 1), Position(2, 2)),
-      // cols
-      Seq(Position(0, 0), Position(1, 0), Position(2, 0)),
-      Seq(Position(0, 1), Position(1, 1), Position(2, 1)),
-      Seq(Position(0, 2), Position(1, 2), Position(2, 2)),
-      // diags
-      Seq(Position(0, 0), Position(1, 1), Position(2, 2)),
-      Seq(Position(2, 0), Position(1, 1), Position(0, 2)),
-    )
+    val winSeqs = makeWinSequences()
     for ((marker, cls) <- List((X, xCells), (O, oCells))) {
       for (winSeq <- winSeqs) {
         var c = scala.collection.mutable.Map("X" -> 0, "O" -> 0)
@@ -124,11 +160,7 @@ case class ClassicGameGrid(dimension: Int = 3, cells: Seq[Cell] = Seq(),
   }
 
   override def draw(): String = {
-    val positions = List(
-      Position(0,0), Position(0,1), Position(0,2),
-      Position(1,0), Position(1,1), Position(1,2),
-      Position(2,0), Position(2,1), Position(2,2),
-    )
+    val positions = allPositions()
     /*
      * XO-
      * -XO
